@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content QC Dev Platform - 产品需求文档</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-canvas: #f5f5f5; --color-paper: #ffffff; --color-surface-alt: #fafafa;
+      --color-ink: #0a0a0a; --color-ink-soft: #171717; --color-mid-gray: #737373;
+      --color-hairline: #e5e5e5; --color-ember: #e7000b;
+      --font-geist: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --sp-4:4px; --sp-8:8px; --sp-12:12px; --sp-16:16px; --sp-20:20px; --sp-24:24px; --sp-48:48px;
+      --r-md:6px; --r-lg:10px; --r-xl:14px; --r-2xl:18px; --r-3xl:24px;
+      --shadow-card: 0 0 0 1px rgba(23,23,23,0.05), 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1);
+      --sidebar-w: 260px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;scroll-padding-top:24px}
+    body{font-family:var(--font-geist);font-size:14px;font-weight:400;line-height:1.43;color:var(--color-ink-soft);background:var(--color-canvas);display:flex;min-height:100vh}
+    a{color:var(--color-ink);text-decoration:none}
+
+    /* SIDEBAR */
+    .sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--color-surface-alt);border-right:1px solid var(--color-hairline);display:flex;flex-direction:column;z-index:100;overflow-y:auto}
+    .sidebar-header{padding:var(--sp-24);border-bottom:1px solid var(--color-hairline)}
+    .sidebar-logo{display:flex;align-items:center;gap:var(--sp-12);margin-bottom:var(--sp-8)}
+    .sidebar-logo-icon{width:36px;height:36px;background:var(--color-ink);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;color:var(--color-paper);font-size:14px;font-weight:600}
+    .sidebar-logo-text{font-size:15px;font-weight:600;color:var(--color-ink);line-height:1.2}
+    .sidebar-subtitle{font-size:12px;color:var(--color-mid-gray);margin-top:var(--sp-4);line-height:1.5}
+    .sidebar-nav{padding:var(--sp-16);flex:1}
+    .sidebar-section-label{font-size:11px;font-weight:600;color:var(--color-mid-gray);text-transform:uppercase;letter-spacing:0.05em;padding:var(--sp-12) var(--sp-12) var(--sp-8)}
+    .sidebar-era-label{font-size:10px;font-weight:600;letter-spacing:0.08em;padding:var(--sp-12) var(--sp-12) var(--sp-4);display:flex;align-items:center;gap:6px}
+    .sidebar-era-label .era-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .sidebar-era-label .era-dot.e{background:var(--color-ink)}
+    .sidebar-era-label .era-dot.r{background:#f97316}
+    .sidebar-era-label .era-dot.a{background:var(--color-ember)}
+    .sidebar-link{display:flex;align-items:center;gap:var(--sp-8);padding:var(--sp-8) var(--sp-12);border-radius:var(--r-md);font-size:13px;font-weight:400;color:var(--color-mid-gray);transition:all 0.15s ease;cursor:pointer;text-decoration:none}
+    .sidebar-link:hover{background:var(--color-canvas);color:var(--color-ink);text-decoration:none}
+    .sidebar-link.active{background:var(--color-canvas);color:var(--color-ink);font-weight:500}
+    .sidebar-link .nav-num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:4px;background:var(--color-canvas);font-size:11px;font-weight:600;color:var(--color-mid-gray);flex-shrink:0}
+    .sidebar-link.active .nav-num{background:var(--color-ink);color:var(--color-paper)}
+    .sidebar-footer{padding:var(--sp-16) var(--sp-24);border-top:1px solid var(--color-hairline);font-size:11px;color:var(--color-mid-gray)}
+
+    /* MAIN */
+    .main{margin-left:var(--sidebar-w);flex:1;min-height:100vh}
+    .main-content{max-width:1080px;margin:0 auto;padding:var(--sp-48) var(--sp-48) 96px}
+
+    /* TYPOGRAPHY */
+    h1{font-size:48px;font-weight:600;line-height:1.1;color:var(--color-ink);letter-spacing:-0.05em;margin-bottom:var(--sp-16)}
+    h2{font-size:24px;font-weight:600;line-height:1.33;color:var(--color-ink);letter-spacing:-0.025em;margin-bottom:var(--sp-16);padding-bottom:var(--sp-12);border-bottom:1px solid var(--color-hairline)}
+    h3{font-size:16px;font-weight:600;line-height:1.5;color:var(--color-ink);margin-bottom:var(--sp-12)}
+    h4{font-size:14px;font-weight:600;line-height:1.43;color:var(--color-ink);margin-bottom:var(--sp-8)}
+    p{margin-bottom:var(--sp-16);line-height:1.63}
+
+    /* HERO */
+    .hero{padding-bottom:var(--sp-48);border-bottom:1px solid var(--color-hairline);margin-bottom:var(--sp-48)}
+    .hero-subtitle{font-size:18px;color:var(--color-mid-gray);font-weight:400;margin-bottom:var(--sp-24);line-height:1.56}
+    .hero-meta{display:flex;gap:var(--sp-8);flex-wrap:wrap}
+
+    /* ERA NAV */
+    .era-nav{display:flex;gap:var(--sp-16);margin-bottom:var(--sp-48)}
+    .era-nav-card{flex:1;padding:var(--sp-20);border-radius:var(--r-3xl);border:1px solid var(--color-hairline);background:var(--color-paper);cursor:pointer;transition:all 0.15s;text-decoration:none;box-shadow:var(--shadow-card)}
+    .era-nav-card:hover{box-shadow:0 0 0 1px rgba(23,23,23,0.05),0 2px 8px rgba(0,0,0,0.12),0 1px 3px rgba(0,0,0,0.1)}
+    .era-nav-card .era-letter{width:40px;height:40px;border-radius:var(--r-xl);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;margin-bottom:var(--sp-12)}
+    .era-nav-card .era-letter.e{background:var(--color-ink);color:var(--color-paper)}
+    .era-nav-card .era-letter.r{background:#f97316;color:var(--color-paper)}
+    .era-nav-card .era-letter.a{background:var(--color-ember);color:var(--color-paper)}
+    .era-nav-card .era-subtitle{font-size:11px;font-weight:600;color:var(--color-mid-gray);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+    .era-nav-card .era-title{font-size:14px;font-weight:600;color:var(--color-ink);margin-bottom:var(--sp-8)}
+    .era-nav-card .era-desc{font-size:12px;color:var(--color-mid-gray);line-height:1.5}
+
+    /* SECTION / BADGE */
+    .section{margin-bottom:72px}
+    .section-badge{display:inline-flex;align-items:center;gap:var(--sp-8);padding:4px 10px;background:var(--color-surface-alt);border:1px solid var(--color-hairline);border-radius:20px;font-size:12px;font-weight:500;color:var(--color-mid-gray);margin-bottom:var(--sp-16)}
+    .section-badge .badge-dot{width:6px;height:6px;border-radius:50%;background:var(--color-ink)}
+    .era-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:var(--r-2xl);font-size:11px;font-weight:600;margin-bottom:var(--sp-16);letter-spacing:0.03em}
+    .era-badge.e{background:var(--color-ink);color:var(--color-paper)}
+    .era-badge.r{background:#f97316;color:var(--color-paper)}
+    .era-badge.a{background:var(--color-ember);color:var(--color-paper)}
+    .section-sep{height:1px;background:var(--color-hairline);margin:48px 0}
+
+    /* CARD */
+    .card{background:var(--color-paper);border:1px solid var(--color-hairline);border-radius:var(--r-3xl);padding:var(--sp-20);box-shadow:var(--shadow-card);transition:box-shadow 0.15s ease}
+    .card:hover{box-shadow:0 0 0 1px rgba(23,23,23,0.05),0 2px 8px rgba(0,0,0,0.12),0 1px 3px rgba(0,0,0,0.1)}
+    .card-header{display:flex;align-items:center;gap:var(--sp-12);margin-bottom:var(--sp-16)}
+    .card-icon{width:36px;height:36px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+    .card-icon.dark{background:var(--color-ink);color:var(--color-paper)}
+    .card-icon.gray{background:var(--color-canvas);color:var(--color-mid-gray)}
+    .card-title{font-size:14px;font-weight:600;color:var(--color-ink)}
+    .card-desc{font-size:13px;color:var(--color-mid-gray);line-height:1.5}
+
+    /* GRID */
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-16)}
+    .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-16)}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-16)}
+
+    /* FLOW */
+    .flow-container{background:var(--color-paper);border:1px solid var(--color-hairline);border-radius:var(--r-3xl);padding:var(--sp-24);margin-bottom:var(--sp-16);box-shadow:var(--shadow-card)}
+    .flow-title{font-size:14px;font-weight:600;color:var(--color-ink);margin-bottom:var(--sp-16);display:flex;align-items:center;gap:var(--sp-8)}
+    .flow-title .tag{display:inline-flex;padding:2px 8px;border-radius:var(--r-2xl);font-size:11px;font-weight:500}
+    .flow-title .tag.dark{background:var(--color-ink);color:var(--color-paper)}
+    .flow-steps{display:flex;align-items:center;gap:0;overflow-x:auto;padding:var(--sp-8) 0}
+    .flow-node{display:flex;flex-direction:column;align-items:center;min-width:110px;flex-shrink:0}
+    .flow-node-box{padding:var(--sp-12) var(--sp-16);border:1px solid var(--color-hairline);border-radius:var(--r-md);font-size:12px;font-weight:500;color:var(--color-ink);text-align:center;background:var(--color-paper);min-width:90px}
+    .flow-node-box.active{background:var(--color-ink);color:var(--color-paper);border-color:var(--color-ink)}
+    .flow-node-box.highlight{border-color:var(--color-ink);border-width:2px}
+    .flow-node-label{font-size:11px;color:var(--color-mid-gray);margin-top:var(--sp-8);text-align:center}
+    .flow-arrow{display:flex;align-items:center;justify-content:center;min-width:36px;flex-shrink:0;color:var(--color-hairline)}
+    .flow-arrow svg{width:20px;height:20px}
+
+    /* VFLOW */
+    .vflow{display:flex;flex-direction:column;gap:0}
+    .vflow-step{display:flex;align-items:stretch;gap:var(--sp-16)}
+    .vflow-track{display:flex;flex-direction:column;align-items:center;width:24px;flex-shrink:0}
+    .vflow-dot{width:24px;height:24px;border-radius:50%;background:var(--color-ink);color:var(--color-paper);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+    .vflow-dot.ember{background:var(--color-ember)}
+    .vflow-line{width:2px;flex:1;background:var(--color-hairline);min-height:20px}
+    .vflow-content{padding:var(--sp-4) 0 var(--sp-20);flex:1}
+    .vflow-content h4{margin-bottom:var(--sp-4)}
+    .vflow-content p{font-size:13px;color:var(--color-mid-gray);margin-bottom:0}
+
+    /* TABLE */
+    .table-wrap{background:var(--color-paper);border:1px solid var(--color-hairline);border-radius:var(--r-3xl);overflow:hidden;margin-bottom:var(--sp-16);box-shadow:var(--shadow-card)}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    thead{background:var(--color-surface-alt)}
+    th{padding:var(--sp-12) var(--sp-16);text-align:left;font-weight:600;color:var(--color-ink);font-size:12px;border-bottom:1px solid var(--color-hairline)}
+    td{padding:var(--sp-12) var(--sp-16);border-bottom:1px solid var(--color-hairline);color:var(--color-ink-soft);vertical-align:top}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:var(--color-surface-alt)}
+
+    /* SPEC */
+    .spec-list{list-style:none;display:flex;flex-direction:column;gap:var(--sp-8)}
+    .spec-list li{display:flex;align-items:flex-start;gap:var(--sp-12);font-size:13px;line-height:1.5;color:var(--color-ink-soft)}
+    .spec-list li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--color-hairline);flex-shrink:0;margin-top:6px}
+    .spec-list li strong{color:var(--color-ink)}
+
+    /* BADGE */
+    .badge-solid{display:inline-flex;padding:2px 8px;border-radius:var(--r-2xl);font-size:12px;font-weight:500;background:var(--color-ink-soft);color:var(--color-paper)}
+    .badge-soft{display:inline-flex;padding:2px 8px;border-radius:var(--r-2xl);font-size:12px;font-weight:500;background:var(--color-surface-alt);color:var(--color-ink-soft)}
+    .badge-ember{display:inline-flex;padding:2px 8px;border-radius:var(--r-2xl);font-size:12px;font-weight:600;background:var(--color-ember);color:var(--color-paper)}
+    .badge-outline{display:inline-flex;padding:2px 8px;border-radius:var(--r-2xl);font-size:12px;font-weight:500;border:1px solid var(--color-hairline);color:var(--color-ink)}
+
+    /* CODE BLOCK */
+    .code-block{background:var(--color-ink);color:#e5e5e5;border-radius:var(--r-xl);padding:var(--sp-20);margin-bottom:var(--sp-16);font-family:'Menlo','Consolas',monospace;font-size:13px;line-height:1.6;overflow-x:auto}
+
+    /* ARCH */
+    .arch-layer{background:var(--color-paper);border:1px solid var(--color-hairline);border-radius:var(--r-3xl);padding:var(--sp-20);margin-bottom:var(--sp-16);box-shadow:var(--shadow-card)}
+    .arch-layer-header{display:flex;align-items:center;gap:var(--sp-8);margin-bottom:var(--sp-16)}
+    .arch-layer-badge{padding:3px 10px;border-radius:var(--r-2xl);font-size:11px;font-weight:600}
+    .arch-layer-badge.dark{background:var(--color-ink);color:var(--color-paper)}
+    .arch-layer-badge.light{background:var(--color-surface-alt);border:1px solid var(--color-hairline);color:var(--color-ink)}
+    .arch-layer-title{font-size:13px;font-weight:600;color:var(--color-ink)}
+    .arch-modules{display:flex;flex-wrap:wrap;gap:var(--sp-8)}
+    .arch-module{padding:var(--sp-8) var(--sp-12);background:var(--color-surface-alt);border:1px solid var(--color-hairline);border-radius:var(--r-md);font-size:12px;font-weight:500;color:var(--color-ink-soft)}
+    .arch-module.highlight{background:var(--color-ink);color:var(--color-paper);border-color:var(--color-ink)}
+    .arch-connector{display:flex;justify-content:center;color:var(--color-hairline);padding:var(--sp-4) 0}
+    .arch-connector svg{width:20px;height:28px}
+
+    /* PROTOTYPE */
+    .proto-frame{background:var(--color-paper);border:1px solid var(--color-hairline);border-radius:var(--r-3xl);overflow:hidden;box-shadow:var(--shadow-card)}
+    .proto-topbar{display:flex;align-items:center;gap:var(--sp-12);padding:var(--sp-12) var(--sp-20);border-bottom:1px solid var(--color-hairline);background:var(--color-paper)}
+    .proto-topbar-logo{font-size:14px;font-weight:600;color:var(--color-ink);display:flex;align-items:center;gap:var(--sp-8)}
+    .proto-topbar-logo svg{width:20px;height:20px}
+    .proto-topbar-tag{padding:2px 10px;background:var(--color-surface-alt);border:1px solid var(--color-hairline);border-radius:var(--r-2xl);font-size:11px;color:var(--color-mid-gray);display:flex;align-items:center;gap:4px}
+    .proto-topbar-tag .dot{width:6px;height:6px;border-radius:50%;background:#22c55e}
+    .proto-topbar-new{margin-left:auto;padding:var(--sp-8) var(--sp-16);background:var(--color-ink);color:var(--color-paper);border:none;border-radius:var(--r-2xl);font-size:13px;font-weight:500;cursor:pointer}
+    .proto-body{display:flex;min-height:420px}
+    .proto-brand-nav{width:90px;border-right:1px solid var(--color-hairline);background:var(--color-surface-alt);padding:var(--sp-12) 0;overflow-y:auto;flex-shrink:0}
+    .proto-brand-nav-title{font-size:11px;font-weight:600;color:var(--color-mid-gray);text-align:center;padding:0 0 var(--sp-8)}
+    .proto-brand-btn{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;padding:var(--sp-8) var(--sp-4);border:none;background:transparent;cursor:pointer;font-family:var(--font-geist);transition:background 0.1s}
+    .proto-brand-btn:hover{background:var(--color-canvas)}
+    .proto-brand-btn.active{background:var(--color-ink)}
+    .proto-brand-btn .brand-en{font-size:11px;font-weight:600;color:var(--color-ink);line-height:1.2}
+    .proto-brand-btn .brand-cn{font-size:9px;color:var(--color-mid-gray);line-height:1.2}
+    .proto-brand-btn.active .brand-en,.proto-brand-btn.active .brand-cn{color:var(--color-paper)}
+    .proto-main-panel{flex:1;padding:var(--sp-20);display:flex;flex-direction:column;gap:var(--sp-16)}
+    .proto-main-title{font-size:18px;font-weight:600;color:var(--color-ink);letter-spacing:-0.025em}
+    .proto-main-desc{font-size:13px;color:var(--color-mid-gray);margin-top:-8px}
+    .proto-input-row{display:flex;gap:var(--sp-8)}
+    .proto-input{flex:1;padding:var(--sp-12) var(--sp-16);background:var(--color-surface-alt);border:1px solid var(--color-hairline);border-radius:var(--r-2xl);font-size:13px;color:var(--color-mid-gray);font-family:var(--font-geist)}
+    .proto-btn{padding:var(--sp-8) var(--sp-20);background:var(--color-ink);color:var(--color-paper);border:none;border-radius:var(--r-2xl);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+    .proto-btn-outline{padding:var(--sp-8) var(--sp-16);background:transparent;color:var(--color-ink);border:1px solid var(--color-hairline);border-radius:var(--r-2xl);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+    .proto-brief-row{display:flex;align-items:center;gap:var(--sp-8);font-size:13px}
+    .proto-brief-row .label{color:var(--color-mid-gray)}
+    .proto-brief-row .brand{color:var(--color-ember);font-weight:500}
+    .proto-brief-select{margin-left:auto;padding:var(--sp-4) var(--sp-12);background:transparent;border:1px solid var(--color-hairline);border-radius:var(--r-2xl);font-size:12px;color:var(--color-ink);cursor:pointer;font-family:var(--font-geist)}
+    .proto-audit-card{border:1px solid var(--color-hairline);border-radius:var(--r-xl);padding:var(--sp-16);background:var(--color-paper)}
+    .proto-audit-header{display:flex;align-items:center;gap:var(--sp-8);margin-bottom:var(--sp-12)}
+    .proto-audit-num{font-size:13px;font-weight:600;color:var(--color-ink)}
+    .proto-audit-status{padding:2px 8px;border-radius:var(--r-2xl);font-size:11px;font-weight:500;background:var(--color-surface-alt);border:1px solid var(--color-hairline);color:var(--color-mid-gray)}
+    .proto-audit-cat{padding:2px 8px;border-radius:var(--r-2xl);font-size:11px;font-weight:500;background:var(--color-surface-alt);color:var(--color-ink-soft)}
+    .proto-audit-reason{font-size:13px;color:var(--color-ember);font-weight:500;margin-bottom:var(--sp-8)}
+    .proto-audit-feedback{font-size:12px;color:var(--color-mid-gray);margin-bottom:var(--sp-12);line-height:1.5}
+    .proto-patch-row{display:flex;gap:var(--sp-12);margin-bottom:var(--sp-12)}
+    .proto-patch-col{flex:1}
+    .proto-patch-label{font-size:11px;font-weight:600;color:var(--color-mid-gray);margin-bottom:var(--sp-4);text-transform:uppercase;letter-spacing:0.05em}
+    .proto-patch-text{font-size:12px;line-height:1.5;padding:var(--sp-12);border-radius:var(--r-md);min-height:36px}
+    .proto-patch-text.before{background:#fef2f2;color:var(--color-ember);border:1px solid #fecaca}
+    .proto-patch-text.after{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+    .proto-patch-arrow{display:flex;align-items:center;color:var(--color-mid-gray);flex-shrink:0;font-size:16px;padding-top:18px}
+    .proto-audit-actions{display:flex;gap:var(--sp-8)}
+    .proto-audit-btn{padding:var(--sp-8) var(--sp-20);border-radius:var(--r-2xl);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--color-hairline);font-family:var(--font-geist)}
+    .proto-audit-btn.approve{background:#dcfce7;color:#166534;border-color:#bbf7d0}
+    .proto-audit-btn.reject{background:transparent;color:var(--color-ink)}
+    .proto-preview-panel{width:45%;border-left:1px solid var(--color-hairline);padding:var(--sp-20);overflow-y:auto;font-size:13px;line-height:1.63;color:var(--color-ink-soft)}
+    .proto-preview-tag{display:inline-block;padding:2px 8px;background:var(--color-surface-alt);border:1px solid var(--color-hairline);border-radius:var(--r-2xl);font-size:12px;color:var(--color-mid-gray);margin-bottom:var(--sp-12)}
+    .proto-preview-img{width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,#fde68a 0%,#fbbf24 50%,#f59e0b 100%);border-radius:var(--r-lg);margin-top:var(--sp-12);display:flex;align-items:center;justify-content:center;color:var(--color-paper);font-size:13px;font-weight:600}
+
+    /* COLLAPSIBLE */
+    .collapsible-trigger{display:flex;align-items:center;gap:var(--sp-8);width:100%;padding:var(--sp-16) var(--sp-20);background:var(--color-paper);border:1px solid var(--color-hairline);border-radius:var(--r-3xl);cursor:pointer;font-family:var(--font-geist);font-size:14px;font-weight:600;color:var(--color-ink);text-align:left;margin-bottom:var(--sp-16);box-shadow:var(--shadow-card);transition:all 0.15s}
+    .collapsible-trigger:hover{box-shadow:0 0 0 1px rgba(23,23,23,0.05),0 2px 8px rgba(0,0,0,0.12),0 1px 3px rgba(0,0,0,0.1)}
+    .collapsible-trigger .arrow{margin-left:auto;transition:transform 0.2s;font-size:12px;color:var(--color-mid-gray)}
+    .collapsible-trigger.open .arrow{transform:rotate(90deg)}
+    .collapsible-content{display:none}
+    .collapsible-content.open{display:block}
+
+    @media(max-width:900px){.sidebar{display:none}.main{margin-left:0}.grid-4{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo"><div class="sidebar-logo-icon">CQ</div><div><div class="sidebar-logo-text">Content QC</div></div></div>
+    <div class="sidebar-subtitle">产品需求文档</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-era-label"><span class="era-dot e"></span> E · 提取经验</div>
+    <a href="#overview" class="sidebar-link active"><span class="nav-num">1</span>产品概述</a>
+    <a href="#features" class="sidebar-link"><span class="nav-num">2</span>核心功能模块</a>
+    <div class="sidebar-era-label"><span class="era-dot r"></span> R · 固化规则</div>
+    <a href="#brief" class="sidebar-link"><span class="nav-num">3</span>BRIEF 知识库</a>
+    <a href="#engine" class="sidebar-link"><span class="nav-num">4</span>审核引擎与知识注入</a>
+    <div class="sidebar-era-label"><span class="era-dot a"></span> A · 定义边界</div>
+    <a href="#assign" class="sidebar-link"><span class="nav-num">5</span>人机协作边界</a>
+    <a href="#rules" class="sidebar-link"><span class="nav-num">6</span>核心业务规则</a>
+    <div class="sidebar-section-label" style="margin-top:12px;">附录</div>
+    <a href="#arch" class="sidebar-link"><span class="nav-num">A</span>技术架构</a>
+    <a href="#api" class="sidebar-link"><span class="nav-num">B</span>API 契约</a>
+  </nav>
+  <div class="sidebar-footer"><div>Content QC Dev Platform</div></div>
+</aside>
+
+<!-- MAIN -->
+<main class="main"><div class="main-content">
+
+  <!-- HERO -->
+  <div id="overview" class="hero">
+    <h1>Content QC Dev Platform</h1>
+    <p class="hero-subtitle">面向内容运营团队的 AI 图文稿件审核平台<br>加载飞书文档 → AI 逐 block 审核 → 人工确认 → 一键写回飞书</p>
+    <div class="hero-meta">
+      <span class="badge-soft">React 18 + Vite 5</span>
+      <span class="badge-soft">FastAPI + Uvicorn</span>
+      <span class="badge-soft">通义千问 Qwen</span>
+      <span class="badge-soft">飞书开放平台 API</span>
+      <span class="badge-soft">本地文件存储</span>
+    </div>
+  </div>
+
+  <!-- ERA NAV -->
+  <div class="era-nav">
+    <a href="#features" class="era-nav-card" style="text-decoration:none;">
+      <div class="era-letter e">E</div>
+      <div class="era-subtitle">Extract · 提取经验</div>
+      <div class="era-title">目前的审稿工作流</div>
+      <div class="era-desc">识别哪些步骤可被 AI 替代，提取审稿经验转化为系统能力</div>
+    </a>
+    <a href="#brief" class="era-nav-card" style="text-decoration:none;">
+      <div class="era-letter r">R</div>
+      <div class="era-subtitle">Refine · 固化规则</div>
+      <div class="era-title">审稿规则结构化</div>
+      <div class="era-desc">品牌 BRIEF、平台规则、广告合规、业务经验 → AI 可理解的知识库</div>
+    </a>
+    <a href="#assign" class="era-nav-card" style="text-decoration:none;">
+      <div class="era-letter a">A</div>
+      <div class="era-subtitle">Assign · 定义边界</div>
+      <div class="era-title">人机协作边界</div>
+      <div class="era-desc">明确哪些环节必须由人来判断和兜底，避免 LLM 审核跑偏或误解意图</div>
+    </a>
+  </div>
+
+  <!-- ===================== E: EXTRACT ===================== -->
+  <div class="era-badge e">E · Extract · 提取经验</div>
+
+  <section class="section">
+    <h2>核心用户流程</h2>
+    <p style="font-size:13px;color:var(--color-mid-gray);margin-bottom:20px;">当前人工审稿 5 步流程中，<strong>Step 3 人工审核</strong>和 <strong>Step 4 修改内容</strong>可被 AI 替代</p>
+    <div class="flow-container">
+      <div class="flow-steps">
+        <div class="flow-node"><div class="flow-node-box">发送 BRIEF</div><div class="flow-node-label">Step 1</div></div>
+        <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="flow-node"><div class="flow-node-box">回收稿件<br><span style="font-size:10px;color:var(--color-mid-gray);">加载飞书文档</span></div><div class="flow-node-label">Step 2</div></div>
+        <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="flow-node"><div class="flow-node-box highlight">AI 审核<br><span style="font-size:10px;color:var(--color-ember);">可 AI 代替</span></div><div class="flow-node-label">Step 3</div></div>
+        <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="flow-node"><div class="flow-node-box highlight">AI 修改建议<br><span style="font-size:10px;color:var(--color-ember);">可 AI 代替</span></div><div class="flow-node-label">Step 4</div></div>
+        <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="flow-node"><div class="flow-node-box active">发给客户<br><span style="font-size:10px;">写回飞书</span></div><div class="flow-node-label">Step 5</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>核心功能模块</h2>
+    <div class="grid-2" style="margin-bottom:24px;">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon dark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+          <div><div class="card-title">内容 QC 审核</div><div class="card-desc">Content QC</div></div>
+        </div>
+        <ul class="spec-list">
+          <li><strong>Block 级审核：</strong>飞书文档拆分为 block，逐批发送给 AI</li>
+          <li><strong>SSE 流式输出：</strong>审核过程实时推送</li>
+          <li><strong>问题分类：</strong>brief_mismatch / ad_risk / typo / better_expression</li>
+          <li><strong>Patch 机制：</strong>before（原文）+ after（建议修改），人工可编辑</li>
+          <li><strong>Hash 校验：</strong>写回前校验 block 内容，防并发冲突</li>
+          <li><strong>文档预览联动：</strong>点击问题自动定位并高亮对应 block</li>
+          <li><strong>图片渲染：</strong>IMAGE_TOKEN → 后端代理下载 → 前端渲染</li>
+          <li><strong>再次写回：</strong>已写回问题可再次编辑并重新同步</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon gray"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+          <div><div class="card-title">BRIEF 知识库管理</div><div class="card-desc">Brief Knowledge Base</div></div>
+        </div>
+        <ul class="spec-list">
+          <li><strong>生命周期：</strong>uploaded → ocr_done → structuring → pending_review → approved/done</li>
+          <li><strong>文件上传：</strong>支持 PDF / Word / Markdown / TXT</li>
+          <li><strong>自动 OCR：</strong>提取文本 → 转 Markdown 存储</li>
+          <li><strong>LLM 结构化：</strong>提取品牌名、产品定位、卖点、审核触发词等</li>
+          <li><strong>审核面板：</strong>左右分栏，MD 预览 + JSON 编辑</li>
+          <li><strong>强制审核规则：</strong>audit_rules 以最高优先级注入 LLM</li>
+          <li><strong>品牌关联：</strong>每个 BRIEF 绑定品牌，审核时按品牌筛选</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-sep"></div>
+
+  <!-- ===================== R: REFINE ===================== -->
+  <div class="era-badge r">R · Refine · 固化规则</div>
+
+  <section id="brief" class="section">
+    <h2>BRIEF 知识库管理</h2>
+
+    <h3>BRIEF 生命周期</h3>
+    <div class="flow-container">
+      <div class="flow-steps">
+        <div class="flow-node"><div class="flow-node-box">上传文件<br><span style="font-size:10px;color:var(--color-mid-gray);">PDF/Word/MD/TXT</span></div></div>
+        <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="flow-node"><div class="flow-node-box">OCR 识别<br><span style="font-size:10px;color:var(--color-mid-gray);">ocr_done</span></div></div>
+        <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="flow-node"><div class="flow-node-box highlight">LLM 结构化<br><span style="font-size:10px;color:var(--color-mid-gray);">structuring</span></div></div>
+        <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="flow-node"><div class="flow-node-box">待审核<br><span style="font-size:10px;color:var(--color-mid-gray);">pending_review</span></div></div>
+        <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="flow-node"><div class="flow-node-box active">approved<br><span style="font-size:10px;">/ done</span></div></div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--color-mid-gray);">长文本处理：短文本（≤12000字符）直接 LLM 提取；长文本按章节拆分 → 分段提取 → 合并去重；提取失败自动兜底。</p>
+
+    <h3>结构化 JSON 字段</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>字段</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td><code>brand_name</code></td><td>品牌名称</td></tr>
+          <tr><td><code>product_name</code></td><td>产品名称</td></tr>
+          <tr><td><code>product_positioning</code></td><td>产品定位描述</td></tr>
+          <tr><td><code>core_claims</code></td><td>核心卖点列表（name + description + key_phrases + forbidden_phrases）</td></tr>
+          <tr><td><code>target_audience</code></td><td>目标受众</td></tr>
+          <tr><td><code>content_directions</code></td><td>推广方向（场景名 + 痛点 + 向往点 + 话题标签）</td></tr>
+          <tr><td><code>copy_rules</code></td><td>文案规范（标题规则 + 正文规则 + 功效声称规则）</td></tr>
+          <tr><td><code>image_rules</code></td><td>图片规范（封面 + 污渍展示 + BA对比）</td></tr>
+          <tr><td><code>disclosure_rules</code></td><td>披露规则</td></tr>
+          <tr><td><code>audit_triggers</code></td><td>审核触发词（品牌术语 + 禁止绝对化用语 + 用法用量 + 场景关键词）</td></tr>
+          <tr><td><code>audit_rules</code></td><td><strong>用户自定义强制审核规则</strong>（最高优先级注入 LLM）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="engine" class="section">
+    <h2>审核引擎与知识注入</h2>
+
+    <h3>审核引擎架构（V1.7+）</h3>
+    <div class="flow-container">
+      <div class="flow-title"><span class="tag dark">Engine</span> AuditOrchestrator → SemanticAuditChecker → Qwen LLM</div>
+      <div class="flow-steps">
+        <div class="flow-node"><div class="flow-node-box">AuditOrchestrator<br><span style="font-size:10px;color:var(--color-mid-gray);">编排器</span></div></div>
+        <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="flow-node"><div class="flow-node-box">SemanticAuditChecker<br><span style="font-size:10px;color:var(--color-mid-gray);">语义审核</span></div></div>
+        <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="flow-node"><div class="flow-node-box highlight">知识注入<br><span style="font-size:10px;color:var(--color-mid-gray);">P0-P6 优先级</span></div></div>
+        <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="flow-node"><div class="flow-node-box active">Qwen LLM<br><span style="font-size:10px;">qwen3.6-plus</span></div></div>
+      </div>
+    </div>
+
+    <h3>知识注入优先级</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>优先级</th><th>来源</th><th>Category</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge-ember">P0</span></td><td><code>structured_json.audit_rules</code></td><td>key_facts</td><td>用户自定义强制规则，LLM 必须严格遵守</td></tr>
+          <tr><td><span class="badge-solid">P1</span></td><td><code>structured_json</code> 结构化字段</td><td>key_facts</td><td>品牌术语、产品定位、卖点、禁用语等</td></tr>
+          <tr><td><span class="badge-solid">P2</span></td><td>BRIEF markdown 提取</td><td>key_facts</td><td>从 BRIEF 全文中提取的关键事实（补充参考）</td></tr>
+          <tr><td><span class="badge-soft">P3</span></td><td>BRIEF 结构化 MD 全文</td><td>brief</td><td>完整的结构化 Markdown（不截断）</td></tr>
+          <tr><td><span class="badge-soft">P4</span></td><td>其他知识文件</td><td>other_knowledge</td><td>品牌资料、产品资料等</td></tr>
+          <tr><td><span class="badge-soft">P5</span></td><td>模板合规信息</td><td>template_compliance</td><td>稿件缺少的模板必需部分</td></tr>
+          <tr><td><span class="badge-outline">P6</span></td><td>全局审核规则</td><td>global_rules</td><td><strong>默认兜底规则</strong>（GR-001 至 GR-010）。当无 BRIEF 或 BRIEF 未覆盖时自动使用，适用于所有品牌</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13px;color:var(--color-mid-gray);"><strong>核心原则：</strong>Brief > 稿件内容。Brief 中明确定义的信息是权威基准，稿件中与之不一致的内容必须被标记为错误。</p>
+    <div style="padding:12px 16px;background:var(--color-surface-alt);border:1px solid var(--color-hairline);border-radius:var(--r-xl);margin-top:12px;font-size:13px;color:var(--color-ink-soft);line-height:1.5;">
+      <strong>Global Rules 兜底机制：</strong>当用户未选择 BRIEF 或 BRIEF 中未覆盖某些审核维度时，系统自动加载全局审核规则（GLOBAL_RULES.md，GR-001 至 GR-010）作为兜底。确保即使无品牌专属知识，AI 审核仍有基本的合规底线。通过 <code>GET /api/briefs/global-rules</code> 获取，作为 System Prompt 注入 LLM。
+    </div>
+  </section>
+
+  <div class="section-sep"></div>
+
+  <!-- ===================== A: ASSIGN ===================== -->
+  <div class="era-badge a">A · Assign · 定义边界</div>
+
+  <section id="assign" class="section">
+    <h2>人机协作边界</h2>
+    <p style="font-size:13px;color:var(--color-mid-gray);margin-bottom:24px;">
+      LLM 审核存在跑偏和误解意图的风险，以下三个环节必须由人来判断和兜底，确保审核质量。
+    </p>
+
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <!-- 1. BRIEF 人工审核 -->
+      <div class="card" style="border-left:3px solid var(--color-ink);">
+        <div style="display:flex;align-items:flex-start;gap:16px;">
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--color-ink);color:var(--color-paper);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;">1</div>
+          <div style="flex:1;">
+            <h4 style="margin-bottom:4px;">BRIEF 导入：人工审核与规则注入</h4>
+            <p style="font-size:13px;color:var(--color-mid-gray);margin-bottom:12px;">
+              LLM 从 BRIEF 文件中自动提取结构化信息（品牌名、卖点、定位等），但提取结果可能存在偏差或遗漏。必须由人工审核提取结果的准确性，并可手动纠正。
+            </p>
+            <ul class="spec-list">
+              <li><strong>人工审核结构化 JSON：</strong>左右分栏（MD 预览 + JSON 编辑），逐字段确认提取是否准确</li>
+              <li><strong>强制审核规则（audit_rules）：</strong>用户手写自定义规则，以<strong>最高优先级</strong>注入 LLM。这是将人工经验转化为系统能力的关键入口</li>
+              <li><strong>兜底机制：</strong>LLM 提取失败时自动触发兜底规则提取，但结果仍需人工确认</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. AI 审核意见人工确认 -->
+      <div class="card" style="border-left:3px solid #f97316;">
+        <div style="display:flex;align-items:flex-start;gap:16px;">
+          <div style="width:32px;height:32px;border-radius:50%;background:#f97316;color:var(--color-paper);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;">2</div>
+          <div style="flex:1;">
+            <h4 style="margin-bottom:4px;">AI 审核意见：人工批准 / 拒绝 / 微调</h4>
+            <p style="font-size:13px;color:var(--color-mid-gray);margin-bottom:12px;">
+              AI 审核返回的每条意见（问题分类 + 修改建议），不能自动生效。必须由人工逐条判断是否采纳，并可对修改建议进行文案微调。
+            </p>
+            <ul class="spec-list">
+              <li><strong>三态操作：</strong>批准（采纳 AI 建议）/ 拒绝（忽略该问题）/ 编辑后写回（微调 AI 建议的文案）</li>
+              <li><strong>Patch 机制：</strong>每条审核结果包含 before（原文）和 after（建议修改），人工可修改 after 后再写回</li>
+              <li><strong>问题分类：</strong>AI 自动分为 brief_mismatch / ad_risk / typo / better_expression 四类，辅助人工快速判断</li>
+              <li><strong>文档预览联动：</strong>点击审核问题 → 自动滚动定位到对应 block 并高亮，方便人工对照原文判断</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. 写回后人工校验 -->
+      <div class="card" style="border-left:3px solid var(--color-ember);">
+        <div style="display:flex;align-items:flex-start;gap:16px;">
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--color-ember);color:var(--color-paper);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;">3</div>
+          <div style="flex:1;">
+            <h4 style="margin-bottom:4px;">写回飞书：人工校验写入准确性</h4>
+            <p style="font-size:13px;color:var(--color-mid-gray);margin-bottom:12px;">
+              修改写回飞书文档后，不能假设写入一定成功且内容准确。必须由人工校验飞书文档中的实际内容是否与预期一致。
+            </p>
+            <ul class="spec-list">
+              <li><strong>写后验证：</strong>系统自动重新读取飞书 block，对比写入结果，返回 4 种状态（APPLIED_AND_VERIFIED / APPLIED_BUT_UNVERIFIED / CONFLICTED / FAILED）</li>
+              <li><strong>Hash 校验：</strong>写回前校验 block 内容是否被其他人修改过，防止并发冲突</li>
+              <li><strong>再次写回：</strong>若人工发现写回不准确，可编辑后再次写回，系统支持多次修正</li>
+              <li><strong>冲突处理：</strong>若云端内容已变化（CONFLICTED），需人工介入判断如何处理</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rules" class="section">
+    <h2>核心业务规则</h2>
+
+    <h3>Block Hash 算法</h3>
+    <div class="code-block">hash = SHA256(block_id + ":" + block_type + ":" + content)</div>
+    <p style="font-size:13px;color:var(--color-mid-gray);">Legacy Adapter 输出的 hash 使用此算法，与迁移前完全一致。</p>
+
+    <h3>写回状态语义</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>状态</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge-solid">APPLIED_AND_VERIFIED</span></td><td>写入成功且重新读取确认</td></tr>
+          <tr><td><span class="badge-soft">APPLIED_BUT_UNVERIFIED</span></td><td>写入成功但重新读取未发现 after 文本</td></tr>
+          <tr><td><span class="badge-outline">CONFLICTED</span></td><td>云端内容已变化，before 不匹配</td></tr>
+          <tr><td><span class="badge-ember">FAILED</span></td><td>写入失败</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Patch 写回流程</h3>
+    <div class="flow-container">
+      <div class="vflow">
+        <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot">1</div><div class="vflow-line"></div></div><div class="vflow-content"><h4>获取最新 block</h4><p>从云端获取（非请求快照）</p></div></div>
+        <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot">2</div><div class="vflow-line"></div></div><div class="vflow-content"><h4>Mapper + Adapter</h4><p>FeishuDocumentMapper → CanonicalDocument → LegacyAdapter</p></div></div>
+        <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot">3</div><div class="vflow-line"></div></div><div class="vflow-content"><h4>验证 before 文本</h4><p>匹配云端内容（支持再次写回：若 before 不在云端，替换整个内容）</p></div></div>
+        <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot">4</div><div class="vflow-line"></div></div><div class="vflow-content"><h4>调用飞书 API 写回</h4><p>执行文本替换操作</p></div></div>
+        <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot">5</div><div class="vflow-line"></div></div><div class="vflow-content"><h4>重新读取验证</h4><p>再次经过 Mapper + Adapter 验证写入结果</p></div></div>
+        <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot ember">6</div></div><div class="vflow-content"><h4>返回状态</h4><p>APPLIED_AND_VERIFIED / APPLIED_BUT_UNVERIFIED / CONFLICTED / FAILED</p></div></div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:24px;">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon dark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div class="card-title">模板安全检查</div>
+        </div>
+        <ul class="spec-list">
+          <li><strong>不信任客户端</strong> template_check_result</li>
+          <li>审核时后端调用 <code>check_template_safety()</code> 重新检查</li>
+          <li>仅将服务端检查结果传递给 AI 审核</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon dark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+          <div class="card-title">后端优先数据读取</div>
+        </div>
+        <ul class="spec-list">
+          <li>审核时直接从 DB 读取最新 <code>structured_json</code> 和 <code>brief_content</code></li>
+          <li><strong>不信任前端缓存</strong>，避免编辑后旧数据生效</li>
+          <li>DB 读取失败时 fallback 到前端传值</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-sep"></div>
+
+  <!-- ===================== APPENDIX ===================== -->
+  <h2 style="border:none;padding-bottom:0;margin-bottom:24px;">附录</h2>
+
+  <!-- Architecture -->
+  <button class="collapsible-trigger" onclick="toggleCollapse(this)">
+    <span style="margin-right:4px;">A</span> 技术架构
+    <span class="arrow">▶</span>
+  </button>
+  <div id="arch" class="collapsible-content">
+    <h3>后端五层架构</h3>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:32px;">
+      <div class="arch-layer"><div class="arch-layer-header"><span class="arch-layer-badge dark">API</span><span class="arch-layer-title">路由层 — HTTP 入口</span></div><div class="arch-modules"><div class="arch-module highlight">audit_routes.py</div><div class="arch-module highlight">brief_routes.py</div><div class="arch-module highlight">template_routes.py</div></div></div>
+      <div class="arch-connector"><svg viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4L12 22"/><path d="M8 18L12 24L16 18"/></svg></div>
+      <div class="arch-layer"><div class="arch-layer-header"><span class="arch-layer-badge light">Application</span><span class="arch-layer-title">应用层 — 业务用例编排</span></div><div class="arch-modules"><div class="arch-module">document_service</div><div class="arch-module">audit_service</div><div class="arch-module">audit_orchestrator</div><div class="arch-module">patch_service</div><div class="arch-module">brief_service</div><div class="arch-module">template_service</div></div></div>
+      <div class="arch-connector"><svg viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4L12 22"/><path d="M8 18L12 24L16 18"/></svg></div>
+      <div class="arch-layer"><div class="arch-layer-header"><span class="arch-layer-badge light">Domain</span><span class="arch-layer-title">领域层 — 纯业务规则，无外部依赖</span></div><div class="arch-modules"><div class="arch-module">document.py</div><div class="arch-module">document_enums.py</div><div class="arch-module">connectors.py</div><div class="arch-module">exceptions.py</div></div></div>
+      <div class="arch-connector"><svg viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4L12 22"/><path d="M8 18L12 24L16 18"/></svg></div>
+      <div class="arch-layer"><div class="arch-layer-header"><span class="arch-layer-badge light">Infrastructure</span><span class="arch-layer-title">基础设施层 — 外部依赖</span></div><div class="arch-modules"><div class="arch-module">feishu_connector</div><div class="arch-module">connector_registry</div><div class="arch-module">qwen_client</div><div class="arch-module">brief_file_store</div><div class="arch-module">brief_structurer</div><div class="arch-module">template_file_store</div><div class="arch-module">feishu_document_reader</div><div class="arch-module">feishu_document_writer</div></div></div>
+      <div class="arch-connector"><svg viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4L12 22"/><path d="M8 18L12 24L16 18"/></svg></div>
+      <div class="arch-layer"><div class="arch-layer-header"><span class="arch-layer-badge light">Schemas</span><span class="arch-layer-title">传输层 — Pydantic 模型</span></div><div class="arch-modules"><div class="arch-module">LoadDocRequest</div><div class="arch-module">AuditRequest</div><div class="arch-module">ApplyPatchRequest</div></div></div>
+    </div>
+
+    <h3>Canonical Document Model 数据流</h3>
+    <div class="flow-container">
+      <div class="flow-steps">
+        <div class="flow-node"><div class="flow-node-box">飞书 Raw Blocks</div></div>
+        <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="flow-node"><div class="flow-node-box">FeishuDocument<br>Mapper</div></div>
+        <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="flow-node"><div class="flow-node-box highlight">Canonical<br>Document</div></div>
+        <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="flow-node"><div class="flow-node-box">LegacyBlock<br>Adapter</div></div>
+        <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="flow-node"><div class="flow-node-box active">Legacy<br>Block List</div></div>
+      </div>
+    </div>
+
+    <h3>Document Connector 抽象</h3>
+    <div class="flow-container">
+      <div class="flow-title"><span class="tag dark">Connector</span> 平台无关连接器接口</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;gap:8px;align-items:center;"><div style="font-size:12px;color:var(--color-mid-gray);min-width:100px;text-align:right;">API Route</div><div style="width:1px;height:16px;background:var(--color-hairline);margin:0 8px;"></div><div style="font-size:12px;color:var(--color-mid-gray);">→ Application Service</div></div>
+        <div style="display:flex;gap:8px;align-items:center;"><div style="font-size:12px;color:var(--color-mid-gray);min-width:100px;text-align:right;">ConnectorRegistry</div><div style="width:1px;height:16px;background:var(--color-hairline);margin:0 8px;"></div><div style="font-size:12px;color:var(--color-mid-gray);">按 URL 自动分发</div></div>
+        <div style="display:flex;gap:8px;align-items:center;"><div style="font-size:12px;color:var(--color-ink);min-width:100px;text-align:right;font-weight:600;">FeishuConnector</div><div style="width:1px;height:16px;background:var(--color-hairline);margin:0 8px;"></div><div style="display:flex;flex-wrap:wrap;gap:4px;"><span class="arch-module" style="font-size:11px;">TokenProvider</span><span class="arch-module" style="font-size:11px;">UrlParser</span><span class="arch-module" style="font-size:11px;">DocumentReader</span><span class="arch-module" style="font-size:11px;">DocumentWriter</span><span class="arch-module" style="font-size:11px;">AssetReader</span></div></div>
+      </div>
+    </div>
+
+    <h4>飞书能力声明</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>能力</th><th>状态</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>can_detect_url</td><td><span class="badge-solid">已实现</span></td><td>URL 检测与平台识别</td></tr>
+          <tr><td>can_read_document</td><td><span class="badge-solid">已实现</span></td><td>读取飞书文档内容</td></tr>
+          <tr><td>can_read_assets</td><td><span class="badge-solid">已实现</span></td><td>读取图片等资源</td></tr>
+          <tr><td>can_replace_text</td><td><span class="badge-solid">已实现</span></td><td>元素级文本替换写回</td></tr>
+          <tr><td>can_read_revision</td><td><span class="badge-soft">未实现</span></td><td>飞书 API 未提供可靠 revision</td></tr>
+          <tr><td>can_rollback</td><td><span class="badge-soft">未实现</span></td><td>无真实回滚机制</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- API -->
+  <button class="collapsible-trigger" onclick="toggleCollapse(this)" style="margin-top:16px;">
+    <span style="margin-right:4px;">B</span> API 契约
+    <span class="arrow">▶</span>
+  </button>
+  <div id="api" class="collapsible-content">
+    <h4>Content QC 接口</h4>
+    <div class="table-wrap"><table><thead><tr><th>路径</th><th>方法</th><th>说明</th></tr></thead><tbody>
+      <tr><td><code>/api/qc/load-doc</code></td><td><span class="badge-soft">POST</span></td><td>加载飞书文档，返回 blocks</td></tr>
+      <tr><td><code>/api/qc/audit</code></td><td><span class="badge-soft">POST (SSE)</span></td><td>开始 AI 审核，流式返回审核结果</td></tr>
+      <tr><td><code>/api/qc/apply-patch</code></td><td><span class="badge-soft">POST</span></td><td>应用单条修改到飞书</td></tr>
+      <tr><td><code>/api/image/{token}</code></td><td><span class="badge-soft">GET</span></td><td>图片代理下载</td></tr>
+    </tbody></table></div>
+
+    <h4>Brief 接口</h4>
+    <div class="table-wrap"><table><thead><tr><th>路径</th><th>方法</th><th>说明</th></tr></thead><tbody>
+      <tr><td><code>/api/briefs</code></td><td><span class="badge-soft">GET</span></td><td>Brief 列表（支持 brand / status 过滤）</td></tr>
+      <tr><td><code>/api/briefs/upload</code></td><td><span class="badge-soft">POST</span></td><td>上传 Brief（触发 OCR + LLM 结构化）</td></tr>
+      <tr><td><code>/api/briefs/{id}</code></td><td><span class="badge-soft">GET/PUT/DELETE</span></td><td>Brief CRUD</td></tr>
+      <tr><td><code>/api/briefs/{id}/content</code></td><td><span class="badge-soft">GET</span></td><td>结构化 MD 内容</td></tr>
+      <tr><td><code>/api/briefs/{id}/raw</code></td><td><span class="badge-soft">GET</span></td><td>原始 OCR Markdown</td></tr>
+      <tr><td><code>/api/briefs/{id}/structured</code></td><td><span class="badge-soft">GET/PUT</span></td><td>结构化 JSON</td></tr>
+      <tr><td><code>/api/briefs/{id}/status</code></td><td><span class="badge-soft">GET</span></td><td>处理阶段状态</td></tr>
+      <tr><td><code>/api/briefs/{id}/download</code></td><td><span class="badge-soft">GET</span></td><td>下载 Brief 文件</td></tr>
+      <tr><td><code>/api/briefs/global-rules</code></td><td><span class="badge-soft">GET</span></td><td>全局审核规则</td></tr>
+    </tbody></table></div>
+
+    <h4>Template 接口</h4>
+    <div class="table-wrap"><table><thead><tr><th>路径</th><th>方法</th><th>说明</th></tr></thead><tbody>
+      <tr><td><code>/api/templates</code></td><td><span class="badge-soft">GET/POST</span></td><td>Template 列表/创建</td></tr>
+      <tr><td><code>/api/templates/{id}</code></td><td><span class="badge-soft">GET/PUT/DELETE</span></td><td>Template CRUD</td></tr>
+      <tr><td><code>/api/templates/check</code></td><td><span class="badge-soft">POST</span></td><td>模板合规检查</td></tr>
+      <tr><td><code>/api/templates/upload</code></td><td><span class="badge-soft">POST</span></td><td>上传模板文件</td></tr>
+      <tr><td><code>/api/templates/rearrange</code></td><td><span class="badge-soft">POST</span></td><td>生成搬运计划</td></tr>
+    </tbody></table></div>
+
+    <h4>管理后台</h4>
+    <div class="table-wrap"><table><thead><tr><th>路径</th><th>方法</th><th>说明</th></tr></thead><tbody>
+      <tr><td><code>/api/admin/settings</code></td><td><span class="badge-soft">GET/POST</span></td><td>API 模式切换、凭证配置</td></tr>
+    </tbody></table></div>
+  </div>
+
+</div></main>
+
+<script>
+// Sidebar active state
+const sections = document.querySelectorAll('[id]');
+const navLinks = document.querySelectorAll('.sidebar-link');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.getAttribute('id');
+      if (id) navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#' + id));
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => { if (s.id && s.tagName !== 'BUTTON') observer.observe(s); });
+
+// Collapsible
+function toggleCollapse(btn) {
+  btn.classList.toggle('open');
+  const content = btn.nextElementSibling;
+  content.classList.toggle('open');
+}
+</script>
+</body>
+</html>
