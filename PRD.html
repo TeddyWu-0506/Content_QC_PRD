@@ -296,10 +296,10 @@
     <h1>Content QC Dev Platform</h1>
     <p class="hero-subtitle">面向内容运营团队的 AI 图文稿件审核平台<br>加载飞书文档 → AI 逐 block 审核 → 人工确认 → 一键写回飞书</p>
     <div class="hero-meta">
-      <span class="badge-soft">React 18 + Vite 5</span>
-      <span class="badge-soft">FastAPI + Uvicorn</span>
-      <span class="badge-soft">通义千问 Qwen</span>
-      <span class="badge-soft">飞书开放平台 API</span>
+      <span class="badge-soft">前端框架（React + Vite）</span>
+      <span class="badge-soft">后端服务（FastAPI）</span>
+      <span class="badge-soft">LLM 大模型（Qwen3.6Plus）</span>
+      <span class="badge-soft">第三方 API（飞书开放平台）</span>
       <span class="badge-soft">本地文件存储</span>
     </div>
   </div>
@@ -356,14 +356,14 @@
           <div><div class="card-title">内容 QC 审核</div><div class="card-desc">Content QC</div></div>
         </div>
         <ul class="spec-list">
-          <li><strong>Block 级审核：</strong>飞书文档拆分为 block，逐批发送给 AI</li>
-          <li><strong>SSE 流式输出：</strong>审核过程实时推送</li>
-          <li><strong>问题分类：</strong>brief_mismatch / ad_risk / typo / better_expression</li>
-          <li><strong>Patch 机制：</strong>before（原文）+ after（建议修改），人工可编辑</li>
-          <li><strong>Hash 校验：</strong>写回前校验 block 内容，防并发冲突</li>
-          <li><strong>文档预览联动：</strong>点击问题自动定位并高亮对应 block</li>
-          <li><strong>图片渲染：</strong>IMAGE_TOKEN → 后端代理下载 → 前端渲染</li>
-          <li><strong>再次写回：</strong>已写回问题可再次编辑并重新同步</li>
+          <li><strong>段落级审核：</strong>自动识别文档中的标题、正文、图片、标签，逐段检查</li>
+          <li><strong>实时进度：</strong>审核过程实时显示，不用干等</li>
+          <li><strong>问题分类：</strong>AI 自动分为内容不符 / 广告风险 / 错别字 / 更好表述 四类</li>
+          <li><strong>原文 vs 建议：</strong>每条问题显示原文和修改建议，支持人工微调</li>
+          <li><strong>冲突保护：</strong>写回前自动检查内容是否被他人修改，防止覆盖</li>
+          <li><strong>一键定位：</strong>点击审核意见，自动跳转到文档对应位置并高亮</li>
+          <li><strong>图片展示：</strong>文档中的图片自动加载显示</li>
+          <li><strong>反复修改：</strong>写回后发现不对，可以再次编辑并重新同步</li>
         </ul>
       </div>
       <div class="card">
@@ -372,13 +372,13 @@
           <div><div class="card-title">BRIEF 知识库管理</div><div class="card-desc">Brief Knowledge Base</div></div>
         </div>
         <ul class="spec-list">
-          <li><strong>生命周期：</strong>uploaded → ocr_done → structuring → pending_review → approved/done</li>
-          <li><strong>文件上传：</strong>支持 PDF / Word / Markdown / TXT</li>
-          <li><strong>自动 OCR：</strong>提取文本 → 转 Markdown 存储</li>
-          <li><strong>LLM 结构化：</strong>提取品牌名、产品定位、卖点、审核触发词等</li>
-          <li><strong>审核面板：</strong>左右分栏，MD 预览 + JSON 编辑</li>
-          <li><strong>强制审核规则：</strong>audit_rules 以最高优先级注入 LLM</li>
-          <li><strong>品牌关联：</strong>每个 BRIEF 绑定品牌，审核时按品牌筛选</li>
+          <li><strong>处理流程：</strong>上传 → 文字识别 → 智能整理 → 待审核 → 完成</li>
+          <li><strong>文件上传：</strong>支持常见文档格式（PDF / Word / Markdown / TXT）</li>
+          <li><strong>文字识别：</strong>上传文件后自动提取文字内容</li>
+          <li><strong>智能整理：</strong>AI 自动提取品牌名、产品定位、核心卖点、审核关键词等</li>
+          <li><strong>审核编辑：</strong>左侧预览整理结果，右侧可逐项修改</li>
+          <li><strong>强制规则：</strong>用户手写的审核规则，AI 必须严格遵守（最高优先级）</li>
+          <li><strong>品牌绑定：</strong>每个 BRIEF 关联一个品牌，审核时自动匹配</li>
         </ul>
       </div>
     </div>
@@ -395,35 +395,35 @@
     <h3>BRIEF 生命周期</h3>
     <div class="flow-container">
       <div class="flow-steps">
-        <div class="flow-node"><div class="flow-node-box">上传文件<br><span style="font-size:10px;color:var(--color-mid-gray);">PDF/Word/MD/TXT</span></div></div>
+        <div class="flow-node"><div class="flow-node-box">上传文件<br><span style="font-size:10px;color:var(--color-mid-gray);">常见文档格式</span></div></div>
         <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-        <div class="flow-node"><div class="flow-node-box">OCR 识别<br><span style="font-size:10px;color:var(--color-mid-gray);">ocr_done</span></div></div>
+        <div class="flow-node"><div class="flow-node-box">文字识别<br><span style="font-size:10px;color:var(--color-mid-gray);">自动提取文字</span></div></div>
         <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-        <div class="flow-node"><div class="flow-node-box highlight">LLM 结构化<br><span style="font-size:10px;color:var(--color-mid-gray);">structuring</span></div></div>
+        <div class="flow-node"><div class="flow-node-box highlight">智能整理<br><span style="font-size:10px;color:var(--color-mid-gray);">AI 提取关键信息</span></div></div>
         <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-        <div class="flow-node"><div class="flow-node-box">待审核<br><span style="font-size:10px;color:var(--color-mid-gray);">pending_review</span></div></div>
+        <div class="flow-node"><div class="flow-node-box">待审核<br><span style="font-size:10px;color:var(--color-mid-gray);">人工确认</span></div></div>
         <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-        <div class="flow-node"><div class="flow-node-box active">approved<br><span style="font-size:10px;">/ done</span></div></div>
+        <div class="flow-node"><div class="flow-node-box active">审核通过<br><span style="font-size:10px;">可用于审核</span></div></div>
       </div>
     </div>
-    <p style="font-size:13px;color:var(--color-mid-gray);">长文本处理：短文本（≤12000字符）直接 LLM 提取；长文本按章节拆分 → 分段提取 → 合并去重；提取失败自动兜底。</p>
+    <p style="font-size:13px;color:var(--color-mid-gray);">长文本处理：短内容直接一次提取；长内容按章节拆分后分段提取再合并；提取失败时自动触发备用方案。</p>
 
-    <h3>结构化 JSON 字段</h3>
+    <h3>AI 从 BRIEF 中提取的关键信息</h3>
     <div class="table-wrap">
       <table>
         <thead><tr><th>字段</th><th>说明</th></tr></thead>
         <tbody>
           <tr><td><code>brand_name</code></td><td>品牌名称</td></tr>
           <tr><td><code>product_name</code></td><td>产品名称</td></tr>
-          <tr><td><code>product_positioning</code></td><td>产品定位描述</td></tr>
-          <tr><td><code>core_claims</code></td><td>核心卖点列表（name + description + key_phrases + forbidden_phrases）</td></tr>
-          <tr><td><code>target_audience</code></td><td>目标受众</td></tr>
-          <tr><td><code>content_directions</code></td><td>推广方向（场景名 + 痛点 + 向往点 + 话题标签）</td></tr>
-          <tr><td><code>copy_rules</code></td><td>文案规范（标题规则 + 正文规则 + 功效声称规则）</td></tr>
-          <tr><td><code>image_rules</code></td><td>图片规范（封面 + 污渍展示 + BA对比）</td></tr>
+          <tr><td><code>product_positioning</code></td><td>产品定位（这个产品主打什么）</td></tr>
+          <tr><td><code>core_claims</code></td><td>核心卖点（产品的主要优势和禁止使用的表述）</td></tr>
+          <tr><td><code>target_audience</code></td><td>目标受众（这个产品卖给谁）</td></tr>
+          <tr><td><code>content_directions</code></td><td>推广方向（使用场景、用户痛点、期望效果）</td></tr>
+          <tr><td><code>copy_rules</code></td><td>文案规范（标题和正文的写作要求）</td></tr>
+          <tr><td><code>image_rules</code></td><td>图片规范（封面和配图的要求）</td></tr>
           <tr><td><code>disclosure_rules</code></td><td>披露规则</td></tr>
-          <tr><td><code>audit_triggers</code></td><td>审核触发词（品牌术语 + 禁止绝对化用语 + 用法用量 + 场景关键词）</td></tr>
-          <tr><td><code>audit_rules</code></td><td><strong>用户自定义强制审核规则</strong>（最高优先级注入 LLM）</td></tr>
+          <tr><td><code>audit_triggers</code></td><td>审核关键词（品牌术语、禁止用语、场景词等）</td></tr>
+          <tr><td><code>audit_rules</code></td><td><strong>自定义强制规则</strong>（用户手写，AI 必须遵守）</td></tr>
         </tbody>
       </table>
     </div>
@@ -432,38 +432,38 @@
   <section id="engine" class="section">
     <h2>审核引擎与知识注入</h2>
 
-    <h3>审核引擎架构（V1.7+）</h3>
+    <h3>审核引擎工作流程</h3>
     <div class="flow-container">
-      <div class="flow-title"><span class="tag dark">Engine</span> AuditOrchestrator → SemanticAuditChecker → Qwen LLM</div>
+      <div class="flow-title"><span class="tag dark">Engine</span> 审核调度 → 内容检查 → AI 大模型</div>
       <div class="flow-steps">
-        <div class="flow-node"><div class="flow-node-box">AuditOrchestrator<br><span style="font-size:10px;color:var(--color-mid-gray);">编排器</span></div></div>
+        <div class="flow-node"><div class="flow-node-box">审核调度<br><span style="font-size:10px;color:var(--color-mid-gray);">协调各环节</span></div></div>
         <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-        <div class="flow-node"><div class="flow-node-box">SemanticAuditChecker<br><span style="font-size:10px;color:var(--color-mid-gray);">语义审核</span></div></div>
+        <div class="flow-node"><div class="flow-node-box">内容检查<br><span style="font-size:10px;color:var(--color-mid-gray);">语义理解与审核</span></div></div>
         <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-        <div class="flow-node"><div class="flow-node-box highlight">知识注入<br><span style="font-size:10px;color:var(--color-mid-gray);">P0-P6 优先级</span></div></div>
+        <div class="flow-node"><div class="flow-node-box highlight">规则注入<br><span style="font-size:10px;color:var(--color-mid-gray);">按优先级加载审核规则</span></div></div>
         <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-        <div class="flow-node"><div class="flow-node-box active">Qwen LLM<br><span style="font-size:10px;">qwen3.6-plus</span></div></div>
+        <div class="flow-node"><div class="flow-node-box active">AI 大模型<br><span style="font-size:10px;">Qwen3.6Plus</span></div></div>
       </div>
     </div>
 
     <h3>知识注入优先级</h3>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>优先级</th><th>来源</th><th>Category</th><th>说明</th></tr></thead>
+        <thead><tr><th>优先级</th><th>来源</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td><span class="badge-ember">P0</span></td><td><code>structured_json.audit_rules</code></td><td>key_facts</td><td>用户自定义强制规则，LLM 必须严格遵守</td></tr>
-          <tr><td><span class="badge-solid">P1</span></td><td><code>structured_json</code> 结构化字段</td><td>key_facts</td><td>品牌术语、产品定位、卖点、禁用语等</td></tr>
-          <tr><td><span class="badge-solid">P2</span></td><td>BRIEF markdown 提取</td><td>key_facts</td><td>从 BRIEF 全文中提取的关键事实（补充参考）</td></tr>
-          <tr><td><span class="badge-soft">P3</span></td><td>BRIEF 结构化 MD 全文</td><td>brief</td><td>完整的结构化 Markdown（不截断）</td></tr>
-          <tr><td><span class="badge-soft">P4</span></td><td>其他知识文件</td><td>other_knowledge</td><td>品牌资料、产品资料等</td></tr>
-          <tr><td><span class="badge-soft">P5</span></td><td>模板合规信息</td><td>template_compliance</td><td>稿件缺少的模板必需部分</td></tr>
-          <tr><td><span class="badge-outline">P6</span></td><td>全局审核规则</td><td>global_rules</td><td><strong>默认兜底规则</strong>（GR-001 至 GR-010）。当无 BRIEF 或 BRIEF 未覆盖时自动使用，适用于所有品牌</td></tr>
+          <tr><td><span class="badge-ember">P0</span></td><td>自定义强制规则</td><td>用户手写的审核规则，AI 必须严格遵守</td></tr>
+          <tr><td><span class="badge-solid">P1</span></td><td>品牌结构化信息</td><td>品牌术语、产品定位、核心卖点、禁止用语等</td></tr>
+          <tr><td><span class="badge-solid">P2</span></td><td>BRIEF 关键事实</td><td>从 BRIEF 全文中提取的补充参考信息</td></tr>
+          <tr><td><span class="badge-soft">P3</span></td><td>BRIEF 完整内容</td><td>完整的结构化文档（不截断）</td></tr>
+          <tr><td><span class="badge-soft">P4</span></td><td>其他知识文件</td><td>品牌资料、产品资料等</td></tr>
+          <tr><td><span class="badge-soft">P5</span></td><td>模板合规信息</td><td>稿件缺少的模板必需部分</td></tr>
+          <tr><td><span class="badge-outline">P6</span></td><td>全局审核规则</td><td><strong>默认兜底规则</strong>（GR-001 至 GR-010）。当无 BRIEF 或 BRIEF 未覆盖时自动使用，适用于所有品牌</td></tr>
         </tbody>
       </table>
     </div>
-    <p style="font-size:13px;color:var(--color-mid-gray);"><strong>核心原则：</strong>Brief > 稿件内容。Brief 中明确定义的信息是权威基准，稿件中与之不一致的内容必须被标记为错误。</p>
+    <p style="font-size:13px;color:var(--color-mid-gray);"><strong>核心原则：</strong>BRIEF 中明确定义的信息是权威基准，稿件中与之不一致的内容必须被标记为错误。</p>
     <div style="padding:12px 16px;background:var(--color-surface-alt);border:1px solid var(--color-hairline);border-radius:var(--r-xl);margin-top:12px;font-size:13px;color:var(--color-ink-soft);line-height:1.5;">
-      <strong>Global Rules 兜底机制：</strong>当用户未选择 BRIEF 或 BRIEF 中未覆盖某些审核维度时，系统自动加载全局审核规则（GLOBAL_RULES.md，GR-001 至 GR-010）作为兜底。确保即使无品牌专属知识，AI 审核仍有基本的合规底线。通过 <code>GET /api/briefs/global-rules</code> 获取，作为 System Prompt 注入 LLM。
+      <strong>全局规则兜底：</strong>当用户未选择 BRIEF 或 BRIEF 中未覆盖某些审核维度时，系统自动加载全局审核规则（GR-001 至 GR-010）作为兜底。确保即使无品牌专属知识，AI 审核仍有基本的合规底线。
     </div>
   </section>
 
@@ -489,9 +489,9 @@
               LLM 从 BRIEF 文件中自动提取结构化信息（品牌名、卖点、定位等），但提取结果可能存在偏差或遗漏。必须由人工审核提取结果的准确性，并可手动纠正。
             </p>
             <ul class="spec-list">
-              <li><strong>人工审核结构化 JSON：</strong>左右分栏（MD 预览 + JSON 编辑），逐字段确认提取是否准确</li>
-              <li><strong>强制审核规则（audit_rules）：</strong>用户手写自定义规则，以<strong>最高优先级</strong>注入 LLM。这是将人工经验转化为系统能力的关键入口</li>
-              <li><strong>兜底机制：</strong>LLM 提取失败时自动触发兜底规则提取，但结果仍需人工确认</li>
+              <li><strong>人工审核：</strong>左侧预览 AI 提取结果，右侧可逐项修改确认</li>
+              <li><strong>强制规则：</strong>用户手写自定义规则，以<strong>最高优先级</strong>注入 AI。这是将人工经验转化为系统能力的关键入口</li>
+              <li><strong>兜底机制：</strong>AI 提取失败时自动触发备用方案，但结果仍需人工确认</li>
             </ul>
           </div>
         </div>
@@ -508,9 +508,9 @@
             </p>
             <ul class="spec-list">
               <li><strong>三态操作：</strong>批准（采纳 AI 建议）/ 拒绝（忽略该问题）/ 编辑后写回（微调 AI 建议的文案）</li>
-              <li><strong>Patch 机制：</strong>每条审核结果包含 before（原文）和 after（建议修改），人工可修改 after 后再写回</li>
-              <li><strong>问题分类：</strong>AI 自动分为 brief_mismatch / ad_risk / typo / better_expression 四类，辅助人工快速判断</li>
-              <li><strong>文档预览联动：</strong>点击审核问题 → 自动滚动定位到对应 block 并高亮，方便人工对照原文判断</li>
+              <li><strong>修改建议：</strong>每条问题显示原文和 AI 建议的修改，人工可微调后再写回</li>
+              <li><strong>问题分类：</strong>AI 自动分为内容不符 / 广告风险 / 错别字 / 更好表述 四类，辅助人工快速判断</li>
+              <li><strong>一键定位：</strong>点击审核问题 → 自动滚动定位到文档对应位置并高亮，方便人工对照原文判断</li>
             </ul>
           </div>
         </div>
@@ -526,10 +526,10 @@
               修改写回飞书文档后，不能假设写入一定成功且内容准确。必须由人工校验飞书文档中的实际内容是否与预期一致。
             </p>
             <ul class="spec-list">
-              <li><strong>写后验证：</strong>系统自动重新读取飞书 block，对比写入结果，返回 4 种状态（APPLIED_AND_VERIFIED / APPLIED_BUT_UNVERIFIED / CONFLICTED / FAILED）</li>
-              <li><strong>Hash 校验：</strong>写回前校验 block 内容是否被其他人修改过，防止并发冲突</li>
-              <li><strong>再次写回：</strong>若人工发现写回不准确，可编辑后再次写回，系统支持多次修正</li>
-              <li><strong>冲突处理：</strong>若云端内容已变化（CONFLICTED），需人工介入判断如何处理</li>
+              <li><strong>写后验证：</strong>系统自动检查飞书文档中的实际内容，确认写入是否成功，返回4种状态</li>
+              <li><strong>冲突保护：</strong>写回前检查文档是否被他人修改过，防止覆盖</li>
+              <li><strong>反复修改：</strong>若人工发现写回不准确，可编辑后再次写回，系统支持多次修正</li>
+              <li><strong>冲突处理：</strong>若文档已被他人修改（冲突状态），需人工介入判断如何处理</li>
             </ul>
           </div>
         </div>
@@ -540,19 +540,18 @@
   <section id="rules" class="section">
     <h2>核心业务规则</h2>
 
-    <h3>Block Hash 算法</h3>
-    <div class="code-block">hash = SHA256(block_id + ":" + block_type + ":" + content)</div>
-    <p style="font-size:13px;color:var(--color-mid-gray);">Legacy Adapter 输出的 hash 使用此算法，与迁移前完全一致。</p>
+    <h3>内容校验机制</h3>
+    <p style="font-size:13px;color:var(--color-mid-gray);margin-bottom:16px;">每段内容在写回前都会生成一个唯一标识，用于确认内容是否被他人修改过，防止覆盖冲突。</p>
 
-    <h3>写回状态语义</h3>
+    <h3>写回状态说明</h3>
     <div class="table-wrap">
       <table>
         <thead><tr><th>状态</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td><span class="badge-solid">APPLIED_AND_VERIFIED</span></td><td>写入成功且重新读取确认</td></tr>
-          <tr><td><span class="badge-soft">APPLIED_BUT_UNVERIFIED</span></td><td>写入成功但重新读取未发现 after 文本</td></tr>
-          <tr><td><span class="badge-outline">CONFLICTED</span></td><td>云端内容已变化，before 不匹配</td></tr>
-          <tr><td><span class="badge-ember">FAILED</span></td><td>写入失败</td></tr>
+          <tr><td><span class="badge-solid">写入成功并已确认</span></td><td>修改已同步到飞书，且系统验证内容正确</td></tr>
+          <tr><td><span class="badge-soft">写入成功但未能确认</span></td><td>修改已同步到飞书，但系统未能验证内容是否正确</td></tr>
+          <tr><td><span class="badge-outline">写入冲突</span></td><td>文档已被他人修改，修改内容与原文不匹配，需人工处理</td></tr>
+          <tr><td><span class="badge-ember">写入失败</span></td><td>同步到飞书时出错，修改未生效</td></tr>
         </tbody>
       </table>
     </div>
@@ -561,11 +560,11 @@
     <div class="flow-container">
       <div class="vflow">
         <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot">1</div><div class="vflow-line"></div></div><div class="vflow-content"><h4>获取最新 block</h4><p>从云端获取（非请求快照）</p></div></div>
-        <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot">2</div><div class="vflow-line"></div></div><div class="vflow-content"><h4>Mapper + Adapter</h4><p>FeishuDocumentMapper → CanonicalDocument → LegacyAdapter</p></div></div>
+        <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot">2</div><div class="vflow-line"></div></div><div class="vflow-content"><h4>格式转换</h4><p>将修改内容转为飞书可识别的格式</p></div></div>
         <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot">3</div><div class="vflow-line"></div></div><div class="vflow-content"><h4>验证 before 文本</h4><p>匹配云端内容（支持再次写回：若 before 不在云端，替换整个内容）</p></div></div>
-        <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot">4</div><div class="vflow-line"></div></div><div class="vflow-content"><h4>调用飞书 API 写回</h4><p>执行文本替换操作</p></div></div>
-        <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot">5</div><div class="vflow-line"></div></div><div class="vflow-content"><h4>重新读取验证</h4><p>再次经过 Mapper + Adapter 验证写入结果</p></div></div>
-        <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot ember">6</div></div><div class="vflow-content"><h4>返回状态</h4><p>APPLIED_AND_VERIFIED / APPLIED_BUT_UNVERIFIED / CONFLICTED / FAILED</p></div></div>
+        <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot">4</div><div class="vflow-line"></div></div><div class="vflow-content"><h4>写入飞书</h4><p>将修改同步到飞书文档</p></div></div>
+        <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot">5</div><div class="vflow-line"></div></div><div class="vflow-content"><h4>验证结果</h4><p>重新读取飞书文档，确认修改已生效</p></div></div>
+        <div class="vflow-step"><div class="vflow-track"><div class="vflow-dot ember">6</div></div><div class="vflow-content"><h4>返回结果</h4><p>写入成功并已确认 / 写入成功但未能确认 / 写入冲突 / 写入失败</p></div></div>
       </div>
     </div>
 
